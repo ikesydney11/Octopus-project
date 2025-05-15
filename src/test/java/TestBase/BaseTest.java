@@ -1,63 +1,55 @@
 package TestBase;
 
-import Pages.loginpage;
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
+import utils.ExtentManager;
 
 import java.time.Duration;
 
+import static utils.ExtentManager.extent;
+
+
 public class BaseTest {
-     public static WebDriver driver;
-     public static ExtentReports extent;
-     public ExtentSparkReporter sparkReport;
-   @BeforeClass
-    public static void  setup(){
-        driver = new ChromeDriver();
+    protected static WebDriver driver;
+    //ExtentManager manager = new ExtentManager();
+
+    @BeforeClass
+    public static void setup() {
+        driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
         driver.manage().window().maximize();
-
-
     }
-    public static void  navigateToUrl(String Url){
+    public static void navigateToUrl(String Url) {
         driver.get(Url);
-
     }
-     public void sleep(int sec){
-        try{
+    public void sleep(int sec) {
+        try {
             Thread.sleep(1000L);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-     }
-     public void validateText(WebElement element, String message) {
+    }
+    public void validateText(WebElement element, String message) {
         Assert.assertEquals(element.getText(), message, "Expected " + message + " but found " + element.getText());
     }
-     public void reporterSetup() {
-        extent = new ExtentReports();
-        sparkReport = new ExtentSparkReporter("Reports/test_report.html");
-        extent.attachReporter(sparkReport);
-        sparkReport.config().setReportName("Test framework report");
-        sparkReport.config().setTheme(Theme.DARK);
-        extent.setSystemInfo("Author", "Ikechukwu");
-        extent.setSystemInfo("environment", "Staging");
-    }
+    ExtentReports reports = new ExtentReports(){
+    };
 
-    @AfterClass
-    public void tearDown()
-     {if(driver!= null) driver.quit();
-     }
-    public static void FlushReport(){
-       extent.flush();
-
+   // @AfterClass
+    public void tearDown() {
+        if (driver != null) driver.quit();
     }
-     }
+    @AfterSuite
+    public void tearDownExtentReport(){
+        if (extent != null){
+            extent.flush();
+        }
+    }
+}
 

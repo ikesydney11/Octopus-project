@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<suite name="Octopus Production">
+
+    <listeners>
+        <listener class-name="utils.testListener" />
+    </listeners>
+    <test name="Regression">
+        <classes>
+            <class name ="TestCases.LoginTestCase" />
+        </classes>
+    </test>
+</suite>
